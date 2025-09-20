@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DevLy69 — Développeur Web | Boutique</title>
+  <meta name="description" content="DevLy69 : création de sites vitrines et sur-mesure. Commande en ligne, hébergement, nom de domaine, SAV." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="#top" aria-label="Accueil DevLy69">
+      <img src="assets/devly.png" alt="DevLy69 logo" />
+      <b>DevLy69</b>
+    </a>
+
+    <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mainnav">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="mainnav">
+      <a href="#services">Services</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#boutique">Boutique</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="container wrap">
+    <div>
+      <span class="chip">DevLy | Développement Web</span>
+      <h1>Création de sites web performants et élégants. <span class="accent">Vitrine</span>, multi-pages, et sur-mesure.</h1>
+      <p>Conception, intégration, hébergement, et accompagnement. Process clair. Délais courts. Support après livraison.</p>
+      <div class="cta-row">
+        <a class="btn" href="#boutique">Commander un site</a>
+        <a class="btn alt" href="#portfolio">PortFolio</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="assets/flyer.png" alt="Flyer DevLy"/>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="container">
+    <h2 class="section-title">Services</h2>
+    <p class="section-sub">Pack vitrine, multi-vitrine, et prestations annexes.</p>
+    <div class="grid">
+      <article class="card">
+        <h3>Site Vitrine</h3>
+        <p>Une page forte et claire. Idéal pour présenter votre activité, capter des contacts, et être trouvé sur Google.</p>
+      </article>
+      <article class="card">
+        <h3>Site Multi-Vitrine</h3>
+        <p>4 à 8 pages structurées. Menu, formulaires, blog léger, et suivi analytics.</p>
+      </article>
+      <article class="card">
+        <h3>Annexes</h3>
+        <p>Mise en ligne, nom de domaine personnalisé, hébergement, et SAV.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio">
+  <div class="container">
+    <h2 class="section-title">Portfolio express</h2>
+    <div class="grid">
+      <!-- Flyer à gauche -->
+      <div class="card media">
+        <div class="asset tight">
+          <img src="assets/flyer.png" alt="Flyer DevLy" />
+        </div>
+      </div>
+      <!-- Grille tarifaire à droite -->
+      <div class="card media">
+        <div class="asset tight">
+          <img src="assets/tarif.png" alt="Grille tarifaire DevLy" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="boutique">
+  <div class="container">
+    <h2 class="section-title">Boutique & Tarifs</h2>
+    <p class="section-sub">Choisissez un pack, ajoutez des options, validez. Contact via Instagram pour finaliser.</p>
+
+    <div class="tarif-block">
+      <img class="tarif-img" src="assets/tarif.png" alt="Tarifs DevLy">
+    </div>
+
+    <div class="shop" id="products">
+      <!-- Produits principaux -->
+      <div class="product" data-sku="vitrine1" data-name="Site vitrine — 1 page" data-price="80">
+        <h3>Site 1 Page</h3>
+        <p>Landing page claire et rapide pour présenter l’essentiel et capter des leads.</p>
+        <div class="price">80€</div>
+        <button class="btn add">Ajouter au panier</button>
+      </div>
+
+      <div class="product" data-sku="vitrine4" data-name="Site vitrine — 4 à 8 pages" data-price="140">
+        <h3>Multi Page</h3>
+        <p>Arborescence complète. Pages clés, formulaires et performances stables.</p>
+        <div class="price">140€</div>
+        <button class="btn add">Ajouter au panier</button>
+      </div>
+
+      <div class="product" data-sku="surmesure" data-name="Site sur-mesure" data-price="0">
+        <h3>Sur mesure</h3>
+        <p>Fonctionnalités spécifiques, intégrations et design unique. Chiffrage personnalisé.</p>
+        <div class="price">Sur devis</div>
+        <button class="btn add">Ajouter au panier</button>
+      </div>
+
+      <!-- Options hébergement -->
+      <div class="panel">
+        <h3>Options hébergement</h3>
+        <div class="grid mini">
+          <label class="product" data-sku="host12" data-name="Hébergement 12 mois" data-price="70">
+            <b>Hébergement 12 mois</b>
+            <span class="price">70€</span>
+            <button class="btn add" type="button">Ajouter</button>
+          </label>
+          <label class="product" data-sku="host24" data-name="Hébergement 24 mois" data-price="120">
+            <b>Hébergement 24 mois</b>
+            <span class="price">120€</span>
+            <button class="btn add" type="button">Ajouter</button>
+          </label>
+          <label class="product" data-sku="host48" data-name="Hébergement 48 mois" data-price="200">
+            <b>Hébergement 48 mois</b>
+            <span class="price">200€</span>
+            <button class="btn add" type="button">Ajouter</button>
+          </label>
+        </div>
+      </div>
+
+      <!-- Domaines & SAV -->
+      <div class="panel">
+        <h3>Noms de domaine & SAV</h3>
+        <div class="grid mini">
+          <label class="product" data-sku="nddfr" data-name="Nom de domaine .fr (1 an)" data-price="10">
+            <b>NDD .fr (1 an)</b>
+            <span class="price">10€</span>
+            <button class="btn add" type="button">Ajouter</button>
+          </label>
+          <label class="product" data-sku="nddcom" data-name="Nom de domaine .com (1 an)" data-price="20">
+            <b>NDD .com (1 an)</b>
+            <span class="price">20€</span>
+            <button class="btn add" type="button">Ajouter</button>
+          </label>
+          <label class="product" data-sku="sav" data-name="SAV / Évolutions" data-price="0">
+            <b>SAV / Évolutions</b>
+            <span>Sur devis</span>
+            <button class="btn add" type="button">Ajouter</button>
+          </label>
+        </div>
+      </div>
+
+      <!-- Panier -->
+      <div class="panel" id="cartPanel">
+        <h3>Panier</h3>
+        <div class="table-wrap">
+          <table id="cartTable" aria-live="polite">
+            <thead>
+              <tr><th>Article</th><th>PU</th><th>Qté</th><th>Total</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr><td colspan="3">Sous-total (TTC)</td><td id="subtotal">0€</td><td></td></tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="cart-actions">
+          <button class="btn alt" id="clearCart" type="button">Vider</button>
+          <button class="btn" id="checkout" type="button">Devis sur Instagram</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <h2 class="section-title">Contact</h2>
+    <div class="contact">
+      <div class="c-card">
+        <h3>Coordonnées</h3>
+        <p class="social-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#E4405F" width="20" height="20"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 4a6 6 0 100 12 6 6 0 000-12zm0 2.25A3.75 3.75 0 1112 16.75 3.75 3.75 0 0112 8.25zm5.5-2a1.25 1.25 0 11-1.25 1.25A1.25 1.25 0 0117.5 6.25z"/></svg>
+          <a href="https://instagram.com/devly69" target="_blank" rel="noopener">@devly69</a>
+        </p>
+        <p class="social-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFFC00" stroke="#000" stroke-width=".6" width="20" height="20"><path d="M12 2c2.65 0 4.93 1.92 4.93 4.28 0 .65-.16 1.27-.46 1.84a.8.8 0 00.6 1.18c1.57.23 2.96.84 2.96 2.03 0 .63-.36 1.06-.78 1.39-.4.31-.89.56-1.35.72-.24.08-.5.14-.77.18a.8.8 0 00-.67.8c0 .53.31.85.63 1.2.37.4.82.87.82 1.6 0 .85-.71 1.55-1.74 1.92-.98.36-2.31.55-3.71.57a.75.75 0 00-.75.75v.95c0 .42-.34.76-.76.76s-.76-.34-.76-.76v-.95a.75.75 0 00-.75-.75c-1.4-.02-2.72-.21-3.7-.57-1.03-.37-1.74-1.07-1.74-1.92 0-.73.45-1.2.82-1.6.32-.35.63-.67.63-1.2a.8.8 0 00-.67-.8 6.1 6.1 0 01-.77-.18c-.46-.16-.95-.41-1.35-.72-.42-.33-.78-.76-.78-1.39 0-1.19 1.39-1.8 2.96-2.03a.8.8 0 00.6-1.18c-.3-.57-.46-1.19-.46-1.84C7.07 3.92 9.35 2 12 2z"/></svg>
+          <a href="https://snapchat.com/add/mly.sdk" target="_blank" rel="noopener">@mly.sdk</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">© <span id="y"></span> DevLy69 — Tous droits réservés</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
