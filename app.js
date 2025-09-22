@@ -1,96 +1,231 @@
-// Année footer
-document.getElementById('y') && (document.getElementById('y').textContent = new Date().getFullYear());
-
-// Burger menu
-const toggle = document.querySelector('.menu-toggle');
-const nav = document.getElementById('mainnav');
-if (toggle && nav) {
-  toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', String(open));
+/* ====== Menu burger ====== */
+const menuBtn = document.querySelector('.menu-toggle');
+const mainnav = document.getElementById('mainnav');
+if (menuBtn && mainnav) {
+  menuBtn.addEventListener('click', () => {
+    const open = mainnav.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', String(open));
   });
-  nav.querySelectorAll('a').forEach(a=>{
-    a.addEventListener('click', ()=>{
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded','false');
-    });
+
+  // Fermer au clic d’un lien
+  mainnav.addEventListener('click', e => {
+    if (e.target.tagName === 'A') {
+      mainnav.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
   });
 }
 
-// Smooth scroll
-document.querySelectorAll('header nav a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
-    e.preventDefault();
-    const el=document.querySelector(a.getAttribute('href'));
-    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
-  });
-});
+/* ====== Année footer ====== */
+const y = document.getElementById('y');
+if (y) y.textContent = new Date().getFullYear();
 
-// Panier
-const cart = new Map(); // sku -> {name, price, qty}
-function formatEUR(n){
-  if(n===0) return '0€';
-  return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n).replace(',00','');
+/* ====== Panier ====== */
+const EURO = n => `${n.toFixed(2).replace('.00','')}€`;
+const products = [...document.querySelectorAll('.product')];
+const cartTableBody = document.querySelector('#cartTable tbody');
+const subtotalEl = document.getElementById('subtotal');
+const clearBtn = document.getElementById('clearCart');
+const checkoutBtn = document.getElementById('checkout');
+
+let cart = {};
+
+function save() {
+  try { localStorage.setItem('devly_cart', JSON.stringify(cart)); } catch {}
 }
-function renderCart(){
-  const tbody = document.querySelector('#cartTable tbody');
-  if(!tbody) return;
-  tbody.innerHTML='';
-  let sum=0;
-  for(const [sku,it] of cart){
-    const tr=document.createElement('tr');
-    const tot=(it.price||0)*it.qty; sum+=tot;
+function load() {
+  try {
+    const raw = localStorage.getItem('devly_cart');
+    if (raw) cart = JSON.parse(raw) || {};
+  } catch { cart = {}; }
+}
+function keyOf(item){ return item.sku; }
+
+function addItem(item, qty=1){
+  const k = keyOf(item);
+  if (!cart[k]) cart[k] = {...item, qty:0};
+  cart[k].qty += qty;
+  if (cart[k].qty <= 0) delete cart[k];
+  render();
+}
+
+function render(){
+  // tbody
+  cartTableBody.innerHTML = '';
+  let subtotal = 0;
+
+  Object.values(cart).forEach(it => {
+    const lineTotal = (it.price || 0) * it.qty;
+    subtotal += lineTotal;
+
+    const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${it.name}</td>
-      <td>${it.price?formatEUR(it.price):'—'}</td>
-      <td>${it.qty}</td>
-      <td>${it.price?formatEUR(tot):'—'}</td>
-      <td><button data-sku="${sku}" class="rmv" aria-label="Supprimer">🗑️</button></td>
+      <td>${it.price ? EURO(it.price) : '—'}</td>
+      <td>
+        <button class="qbtn minus" aria-label="Retirer">−</button>
+        <span class="qval">${it.qty}</span>
+        <button class="qbtn plus" aria-label="Ajouter">+</button>
+      </td>
+      <td>${it.price ? EURO(lineTotal) : '—'}</td>
+      <td><button class="qbtn remove" aria-label="Supprimer">×</button></td>
     `;
-    tbody.appendChild(tr);
-  }
-  const sub=document.getElementById('subtotal');
-  if(sub) sub.textContent=formatEUR(sum);
-}
-function addToCart(sku,name,price){
-  const cur=cart.get(sku)||{name,price:Number(price)||0,qty:0};
-  cur.qty+=1; cart.set(sku,cur); renderCart();
+    tr.querySelector('.minus').addEventListener('click', () => addItem(it, -1));
+    tr.querySelector('.plus').addEventListener('click', () => addItem(it, +1));
+    tr.querySelector('.remove').addEventListener('click', () => { delete cart[keyOf(it)]; render(); });
+
+    cartTableBody.appendChild(tr);
+  });
+
+  subtotalEl.textContent = EURO(subtotal);
+  save();
 }
 
-// Boutons Ajouter
-document.querySelectorAll('.add').forEach(btn=>{
-  btn.addEventListener('click', e=>{
-    const p=e.target.closest('.product');
-    addToCart(p.dataset.sku,p.dataset.name,p.dataset.price);
-    p.classList.add('added');
-    const old=e.target.textContent; e.target.textContent='Ajouté ✓';
-    setTimeout(()=>{p.classList.remove('added'); e.target.textContent=old;},800);
+function extractProduct(el){
+  const sku = el.dataset.sku || '';
+  const name = el.dataset.name || el.querySelector('h3')?.textContent?.trim() || 'Produit';
+  const priceAttr = el.dataset.price;
+  const price = priceAttr ? Number(priceAttr) : 0;
+  return { sku, name, price };
+}
+
+// Boutons "Ajouter au panier"
+products.forEach(el => {
+  const addBtn = el.querySelector('.add');
+  if (!addBtn) return;
+  addBtn.addEventListener('click', () => {
+    const item = extractProduct(el);
+    addItem(item, 1);
+    el.classList.add('added');
+    setTimeout(()=>el.classList.remove('added'), 500);
   });
 });
 
-// Actions panier
-const cartPanel=document.getElementById('cartPanel');
-if(cartPanel){
-  cartPanel.addEventListener('click', e=>{
-    if(e.target.classList.contains('rmv')){
-      cart.delete(e.target.dataset.sku); renderCart();
-    }
-  });
-  const clearBtn=document.getElementById('clearCart');
-  clearBtn && clearBtn.addEventListener('click', ()=>{ cart.clear(); renderCart(); });
-
-  const checkout=document.getElementById('checkout');
-  checkout && checkout.addEventListener('click', ()=>{
-    let text='Panier vide — DevLy69';
-    if(cart.size>0){
-      let lines=[],sum=0;
-      for(const[_,it]of cart){
-        const t=(it.price||0)*it.qty; sum+=t;
-        lines.push(`- ${it.name} x${it.qty} => ${it.price?formatEUR(t):'sur devis'}`);
-      }
-      text=`Commande/Devis — DevLy69\n${lines.join('\n')}\nSous-total estimé: ${formatEUR(sum)}`;
-    }
-    if(navigator.clipboard?.writeText){ navigator.clipboard.writeText(text).catch(()=>{}); }
-    window.open('https://instagram.com/devly69','_blank');
+// Vider
+if (clearBtn) {
+  clearBtn.addEventListener('click', () => {
+    cart = {};
+    render();
   });
 }
+
+// Checkout: compose un devis à coller en DM
+if (checkoutBtn) {
+  checkoutBtn.addEventListener('click', () => {
+    const lines = [];
+    let total = 0;
+    Object.values(cart).forEach(it => {
+      const lt = (it.price || 0) * it.qty;
+      total += lt;
+      lines.push(`${it.name} ×${it.qty} ${it.price?EURO(it.price):''} = ${it.price?EURO(lt):'Sur devis'}`);
+    });
+    lines.push(`Sous-total: ${EURO(total)}`);
+    const msg = `Bonjour, voici mon devis:%0A%0A${lines.join('%0A')}`;
+    window.open(`https://instagram.com/direct/t/`,'_blank'); // ouvre les DMs
+    navigator.clipboard?.writeText(lines.join('\n') + `\nSous-total: ${EURO(total)}`).catch(()=>{});
+    alert('Devis copié. Collez-le dans vos DM Instagram.');
+  });
+}
+
+// Init
+load();
+render();
+
+/* ====== Amélioration ancrages: correctif header fixe ====== */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    const y = el.getBoundingClientRect().top + window.pageYOffset - 84; // header ~72px + marge
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+});
+
+
+/* 1) Menu burger existant ? Garde tel quel. */
+
+/* 2) Parallaxe douce sur le hero */
+(() => {
+  const card = document.querySelector('.hero .hero-card');
+  if(!card) return;
+  window.addEventListener('scroll', () => {
+    const y = Math.min(1, window.scrollY / 300);
+    card.style.transform = `translateZ(${(1-y)*10}px) translateY(${y*8}px)`;
+  }, {passive:true});
+})();
+
+/* 3) Révélations au scroll (IntersectionObserver) */
+(() => {
+  const els = document.querySelectorAll('.card, .product, .panel, .c-card');
+  els.forEach(el => el.classList.add('reveal'));
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+  },{threshold:0.15});
+  els.forEach(el=>io.observe(el));
+})();
+
+/* 4) Ripple sur .btn */
+document.addEventListener('click', e=>{
+  const b = e.target.closest('.btn');
+  if(!b) return;
+  const r = document.createElement('span');
+  const rect = b.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  r.className = 'ripple';
+  r.style.width = r.style.height = size+'px';
+  r.style.left = (e.clientX - rect.left - size/2)+'px';
+  r.style.top  = (e.clientY - rect.top  - size/2)+'px';
+  b.appendChild(r);
+  setTimeout(()=>r.remove(), 600);
+});
+
+/* 5) Tilt subtil sur .card/.product */
+(() => {
+  const tiltable = document.querySelectorAll('.card, .product');
+  tiltable.forEach(el=>el.classList.add('tilt'));
+})();
+
+/* 6) Bouton flottant vers Boutique */
+(() => {
+  if(document.querySelector('.fab')) return;
+  const a = document.createElement('a');
+  a.href = '#boutique';
+  a.className = 'fab';
+  a.textContent = 'Commander';
+  document.body.appendChild(a);
+})();
+
+/* ==== Neige fonctionnelle ==== */
+(function(){
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  const snow = document.createElement('div');
+  snow.id = 'snow';
+  document.body.appendChild(snow);
+
+  const N = 80; // nombre de flocons
+  for (let i = 0; i < N; i++) {
+    const f = document.createElement('span');
+    f.className = 'flake';
+    f.textContent = '❄';
+
+    const size = 8 + Math.random() * 14;                 // 8–22px
+    const x0 = (Math.random() * 100).toFixed(2);         // vw
+    const drift = (Math.random() * 30 - 15).toFixed(2);  // -15 à +15vw
+    const x1 = (parseFloat(x0) + parseFloat(drift));     // vw fin
+
+    const dur = (8 + Math.random() * 10).toFixed(2);     // 8–18s
+    const delay = (Math.random() * 8).toFixed(2);        // 0–8s
+
+    f.style.setProperty('--size', size + 'px');
+    f.style.setProperty('--x-start', x0 + 'vw');
+    f.style.setProperty('--x-end', x1 + 'vw');
+    f.style.setProperty('--dur', dur + 's');
+    f.style.setProperty('--delay', delay + 's');
+
+    snow.appendChild(f);
+  }
+})();
