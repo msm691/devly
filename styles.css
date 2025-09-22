@@ -220,27 +220,3 @@ section::after{
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 
-/* ==== Neige visible (une seule animation qui gère X+Y) ==== */
-#snow {
-  position: fixed; inset: 0;
-  pointer-events: none;
-  z-index: 2147483647; /* au-dessus de tout */
-  overflow: hidden;
-}
-.flake {
-  position: absolute;
-  left: 0; top: 0;
-  color: #fff;
-  opacity: .9;
-  font-size: var(--size, 14px);
-  will-change: transform;
-  animation: snow-fall var(--dur, 10s) linear var(--delay, 0s) infinite;
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-}
-@keyframes snow-fall {
-  0%   { transform: translate3d(var(--x-start, 0), -10vh, 0) rotate(0deg); }
-  100% { transform: translate3d(var(--x-end, 0), 110vh, 0) rotate(360deg); }
-}
-@media (prefers-reduced-motion: reduce){
-  #snow { display:none !important; }
-}
