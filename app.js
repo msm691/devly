@@ -197,35 +197,3 @@ document.addEventListener('click', e=>{
   document.body.appendChild(a);
 })();
 
-/* ==== Neige fonctionnelle ==== */
-(function(){
-  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) return;
-
-  const snow = document.createElement('div');
-  snow.id = 'snow';
-  document.body.appendChild(snow);
-
-  const N = 80; // nombre de flocons
-  for (let i = 0; i < N; i++) {
-    const f = document.createElement('span');
-    f.className = 'flake';
-    f.textContent = '❄';
-
-    const size = 8 + Math.random() * 14;                 // 8–22px
-    const x0 = (Math.random() * 100).toFixed(2);         // vw
-    const drift = (Math.random() * 30 - 15).toFixed(2);  // -15 à +15vw
-    const x1 = (parseFloat(x0) + parseFloat(drift));     // vw fin
-
-    const dur = (8 + Math.random() * 10).toFixed(2);     // 8–18s
-    const delay = (Math.random() * 8).toFixed(2);        // 0–8s
-
-    f.style.setProperty('--size', size + 'px');
-    f.style.setProperty('--x-start', x0 + 'vw');
-    f.style.setProperty('--x-end', x1 + 'vw');
-    f.style.setProperty('--dur', dur + 's');
-    f.style.setProperty('--delay', delay + 's');
-
-    snow.appendChild(f);
-  }
-})();
